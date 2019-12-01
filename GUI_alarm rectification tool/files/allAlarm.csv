@@ -1,0 +1,34 @@
+Name,Alarm type
+PORT_EXC_TRAFFIC,Link based
+MW_BER_SD,Link based
+AM_DOWNSHIFT,Link based
+BD_STATUS,both
+MW_LOF,Link based
+RADIO_RSL_LOW,Link based
+IN_PWR_LOW,NE based
+MAC_FCS_EXC,Link based
+LAG_MEMBER_DOWN,NE based
+R_LOF,Link based
+MAC_EXT_EXC,Link based
+LAG_DOWN,NE based
+BUS_ERR,both
+MW_RDI,Link based
+POWER_ABNORMAL,NE based
+R_LOS,Link based
+R_LOC,Link based
+VOLT_LOS,Link based
+HARD_BAD,both
+MW_BER_EXC,Link based
+TEMP_ALARM,NE based
+PLA_MEMBER_DOWN,NE based
+IF_CABLE_OPEN,Link based
+RADIO_MUTE,Link based
+RADIO_TSL_HIGH,Link based
+PLA_DOWN,NE based
+ELAN_SMAC_FLAPPING,NE based
+XPIC_LOS,Link based
+MW_CFG_MISMATCH,Link based
+SLAVE_BAD,Link based
+IF_INPWR_ABN,Link based
+FAN_FAIL,NE based
+RADIO_RSL_HIGH,Link based
