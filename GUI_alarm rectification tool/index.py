@@ -5,12 +5,13 @@ import tkMessageBox
 import subprocess
 import os
 import sys
+from PIL import Image, ImageTk
 
 #custom libraries
 import alarmRectifier
 #custom libraries ends
 backgroundColor='#27ae60'
-mainButtonColor='#3498db'
+mainButtonColor='#9b59b6'
 
 LARGE_FONT= ("Open Sans", 27,'bold')
 def_font=("Open Sans", 13,'bold')
@@ -32,10 +33,23 @@ if __name__ == '__main__':
 
 	root = tk.Tk() 
 
+	if getattr(sys, 'frozen', False):
+	    image_file_path =os.path.join(sys._MEIPASS, "photos/pic.png")
+	else:
+	    image_file_path = "photos/pic.png"
+
+
+	load = Image.open(image_file_path) ## image background
+	load=load.resize((80, 80), Image.ANTIALIAS)
+	render = ImageTk.PhotoImage(load)
+	img = tk.Label(root, image=render)
+	img.image = render
+	img.place(x=10, y=10) ## image ends
+
 	label = tk.Label(root, text="Alarm Rectification Tool",fg='white',bg=backgroundColor,font=LARGE_FONT)
 	label.pack(pady=2,padx=10)
 
-	button1 = tk.Button(root, text=" Kick Off !! ", cursor="hand2", font=def_font,height = 2, width = 20,bg=mainButtonColor)
+	button1 = tk.Button(root, text=" Generate Output ", cursor="hand2", font=def_font,height = 2, width = 20,bg=mainButtonColor,fg='white')
 	button1.pack(pady=5,padx=5)
 
 	resultLocation = tk.Button(root, text='Open Result Location', cursor="hand2", font=def_font,height = 2, width = 20)
@@ -66,7 +80,7 @@ if __name__ == '__main__':
 	resultLocation["state"] = "disable"
 
 
-	root.title('Alarm Rectification Tool (Beta 1.1.5)')
+	root.title('Alarm Rectification Tool (Beta 1.2.6)')
 	# root.wm_iconbitmap('logo.ico')
 	root.geometry("1100x550") #You want the size of the app to be 500x500
 	root.resizable(0, 0) #Don't allow resizing in the x or y direction

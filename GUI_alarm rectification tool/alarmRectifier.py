@@ -166,11 +166,10 @@ def mainFunc(button1,resultLocation,Lb):
 
 							dataObj = data()
 							dataObj.alarmName = alarmNameInRow
-							dataObj.alarmType = 'BOTH'
 							dataObj.alarmSource = getSiteCodeFromString( row[alarmSourceCol] )
 
 							if 'ODU' in row[alarmLocation] or 'ISV3' in row[alarmLocation] or 'ISM6' in row[alarmLocation]:
-								dataObj.alarmType += ' (LINK BASED)'
+								dataObj.alarmType = 'LINK BASED'
 								dataObj.card = getBoardFromLocation( row[alarmLocation] )
 								site2=getSiteFromCard( dataObj.alarmSource, dataObj.card )
 
@@ -178,7 +177,7 @@ def mainFunc(button1,resultLocation,Lb):
 									dataObj.impactedLink = dataObj.alarmSource+'-'+ getSiteCodeFromString( site2 )
 									allData.append(dataObj)
 							else:
-								dataObj.alarmType += ' (NE BASED)'
+								dataObj.alarmType = 'NE BASED'
 								dataObj.alarmSource = getSiteCodeFromString( row[alarmSourceCol] )
 								dataObj.impactedNE = dataObj.alarmSource
 								dataObj.card = getBoardFromLocation( row[alarmLocation] )
@@ -196,16 +195,24 @@ def mainFunc(button1,resultLocation,Lb):
 				    Lb.yview(tk.END)
 
 
-		j=0					
+		j=0
+		linkedBasedLinksCount=0					
+		NeBasedLinksCount=0					
 		with open(outputFileName, 'wb') as myfile:
 			wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 			wr.writerow(["Alarm Name","Alarm Type","Alarm Source Node","Card/Board Location","Impacted Link","Impacted NE"])
 			while j<len(allData):
+
+				if 'NE BASED' in allData[j].alarmType:
+					NeBasedLinksCount+=1
+				elif 'LINK BASED' in allData[j].alarmType:
+					linkedBasedLinksCount+=1
+
 				wr.writerow([allData[j].alarmName,allData[j].alarmType,allData[j].alarmSource,allData[j].card,allData[j].impactedLink,allData[j].impactedNE])
 				j+=1
 
 		Lb.insert(tk.END, 'Done !!! please click - Open Result Location')
-		Lb.insert(tk.END, 'Total Links : '+str( len(allData) )+' . ')
+		Lb.insert(tk.END, 'Total Uncleared HW Alarms : '+str( len(allData) )+' , NE Based Alarms : '+str(NeBasedLinksCount)+' , Link Based Alarms : '+str(linkedBasedLinksCount))
 		Lb.insert(tk.END, '	---------------------------- X ----------------------------- ')
 		Lb.yview(tk.END)
 
