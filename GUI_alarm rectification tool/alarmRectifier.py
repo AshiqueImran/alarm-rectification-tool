@@ -195,9 +195,64 @@ def mainFunc(button1,resultLocation,Lb):
 				    Lb.yview(tk.END)
 
 
+		j=0				
+		with open(outputFileName, 'wb') as myfile:
+			wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+			wr.writerow(["Alarm Name","Alarm Type","Alarm Source Node","Card/Board Location","Impacted Link","Impacted NE"])
+			while j<len(allData):
+				wr.writerow([allData[j].alarmName,allData[j].alarmType,allData[j].alarmSource,allData[j].card,allData[j].impactedLink,allData[j].impactedNE])
+				j+=1
+
+		allData=[]
+
+		with open(outputFileName,'rU') as csvfile:
+			readCSV = csv.reader(csvfile, delimiter=',')
+			csvfile.next()
+
+			for row in readCSV:
+
+				alarmName=row[0]
+				alarmType=row[1]
+				alarmSource=row[2]
+				card=row[3]
+				impactedLink=row[4]
+				impactedNE=row[5]
+
+				notFoundData=True
+
+				if 'LINK BASED' in alarmType:
+					for obj in allData:
+						if alarmType in obj.alarmType and obj.alarmSource in alarmSource and obj.impactedLink in impactedLink:
+							notFoundData=False
+							if alarmName not in obj.alarmName:
+								obj.alarmName=obj.alarmName+';'+alarmName
+							if card not in obj.card:
+								obj.card=obj.card+';'+card
+
+				elif 'NE BASED' in alarmType:
+					for obj in allData:
+						if alarmType in obj.alarmType and obj.alarmSource in alarmSource and obj.impactedNE in impactedNE:
+							notFoundData=False
+							if alarmName not in obj.alarmName:
+								obj.alarmName=obj.alarmName+';'+alarmName
+							if card not in obj.card:
+								obj.card=obj.card+';'+card
+
+				if notFoundData:
+					dataObj = data()
+
+					dataObj.alarmName=alarmName
+					dataObj.alarmType=alarmType
+					dataObj.alarmSource=alarmSource
+					dataObj.card=card
+					dataObj.impactedLink=impactedLink
+					dataObj.impactedNE=impactedNE
+
+					allData.append(dataObj)
+
 		j=0
 		linkedBasedLinksCount=0					
-		NeBasedLinksCount=0					
+		NeBasedLinksCount=0						
 		with open(outputFileName, 'wb') as myfile:
 			wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
 			wr.writerow(["Alarm Name","Alarm Type","Alarm Source Node","Card/Board Location","Impacted Link","Impacted NE"])

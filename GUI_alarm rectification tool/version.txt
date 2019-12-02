@@ -1,6 +1,6 @@
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(1, 2, 5, 17514),
+    filevers=(2, 2, 5, 17514),
     mask=0x3f,
     flags=0x0,
     OS=0x40004,
@@ -18,7 +18,7 @@ VSVersionInfo(
         StringStruct(u'LegalCopyright', u'\xa9 Md. Ashique Imran. All rights reserved.'),
         StringStruct(u'OriginalFilename', u'Alarm Rectification Tool - Beta.exe'),
         StringStruct(u'ProductName', u'Alarm Rectification Tool - Beta.exe'),
-        StringStruct(u'ProductVersion', u'1.2.6')])
+        StringStruct(u'ProductVersion', u'2.2.6')])
       ]), 
     VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
   ]

@@ -154,11 +154,10 @@ with open(alarmFile,'rU') as csvfile:
 
 				dataObj = data()
 				dataObj.alarmName = alarmNameInRow
-				dataObj.alarmType = 'BOTH'
 				dataObj.alarmSource = getSiteCodeFromString( row[alarmSourceCol] )
 
 				if 'ODU' in row[alarmLocation] or 'ISV3' in row[alarmLocation] or 'ISM6' in row[alarmLocation]:
-					dataObj.alarmType += ' (LINK BASED)'
+					dataObj.alarmType = 'LINK BASED'
 					dataObj.card = getBoardFromLocation( row[alarmLocation] )
 					site2=getSiteFromCard( dataObj.alarmSource, dataObj.card )
 
@@ -166,7 +165,7 @@ with open(alarmFile,'rU') as csvfile:
 						dataObj.impactedLink = dataObj.alarmSource+'-'+ getSiteCodeFromString( site2 )
 						allData.append(dataObj)
 				else:
-					dataObj.alarmType += ' (NE BASED)'
+					dataObj.alarmType = 'NE BASED'
 					dataObj.alarmSource = getSiteCodeFromString( row[alarmSourceCol] )
 					dataObj.impactedNE = dataObj.alarmSource
 					dataObj.card = getBoardFromLocation( row[alarmLocation] )
@@ -186,7 +185,67 @@ with open(outputFileName, 'wb') as myfile:
 	while j<len(allData):
 		wr.writerow([allData[j].alarmName,allData[j].alarmType,allData[j].alarmSource,allData[j].card,allData[j].impactedLink,allData[j].impactedNE])
 		j+=1
+
+# for dataInstance in allData:
+# 	print(dataInstance.alarmName,dataInstance.alarmType,dataInstance.alarmSource,dataInstance.card,dataInstance.impactedLink,dataInstance.impactedNE)
+
+allData=[]
+
+with open(outputFileName,'rU') as csvfile:
+	readCSV = csv.reader(csvfile, delimiter=',')
+	csvfile.next()
+
+	for row in readCSV:
+
+		alarmName=row[0]
+		alarmType=row[1]
+		alarmSource=row[2]
+		card=row[3]
+		impactedLink=row[4]
+		impactedNE=row[5]
+
+		notFoundData=True
+
+		if 'LINK BASED' in alarmType:
+			for obj in allData:
+				if alarmType in obj.alarmType and obj.alarmSource in alarmSource and obj.impactedLink in impactedLink:
+					notFoundData=False
+					if alarmName not in obj.alarmName:
+						obj.alarmName=obj.alarmName+';'+alarmName
+					if card not in obj.card:
+						obj.card=obj.card+';'+card
+
+		elif 'NE BASED' in alarmType:
+			for obj in allData:
+				if alarmType in obj.alarmType and obj.alarmSource in alarmSource and obj.impactedNE in impactedNE:
+					notFoundData=False
+					if alarmName not in obj.alarmName:
+						obj.alarmName=obj.alarmName+';'+alarmName
+					if card not in obj.card:
+						obj.card=obj.card+';'+card
+
+		if notFoundData:
+			dataObj = data()
+
+			dataObj.alarmName=alarmName
+			dataObj.alarmType=alarmType
+			dataObj.alarmSource=alarmSource
+			dataObj.card=card
+			dataObj.impactedLink=impactedLink
+			dataObj.impactedNE=impactedNE
+
+			allData.append(dataObj)
+
+j=0					
+with open(outputFileName, 'wb') as myfile:
+	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+	wr.writerow(["Alarm Name","Alarm Type","Alarm Source Node","Card/Board Location","Impacted Link","Impacted NE"])
+	while j<len(allData):
+		wr.writerow([allData[j].alarmName,allData[j].alarmType,allData[j].alarmSource,allData[j].card,allData[j].impactedLink,allData[j].impactedNE])
+		j+=1
+
 for dataInstance in allData:
 	print(dataInstance.alarmName,dataInstance.alarmType,dataInstance.alarmSource,dataInstance.card,dataInstance.impactedLink,dataInstance.impactedNE)
+
 
 # print(targetAlarms)
