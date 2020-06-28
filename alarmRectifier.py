@@ -7,10 +7,14 @@ import subprocess
 
 alarmFile='AlarmBrowseResult.csv'
 allAlarmFile='allAlarm.csv'
-linkReportInsideDhk='Microwave Link Report Inside DHK.csv'
-linkReportOutSideDhk='Microwave Link Report OutSide DHK.csv'
+linkReport='Microwave Link Report.csv'
 
 outputFileName="Result_alarm_rectification_tool.csv"
+
+sourceNeCol = None
+sourceBoardCol = None
+sinkNeCol = None
+sinkNeBoardCol = None
 
 targetAlarms={}
 allData=[]
@@ -36,49 +40,39 @@ def getSiteCodeFromString(siteString):
 def getSiteFromCard(site,board):
 	# print(site,board)
 
+	global sourceNeCol,sourceBoardCol,sinkNeCol,sinkNeBoardCol
+
 	if board is None or site is None:
 		return None
 	else:
 		site=site.upper()
 		board=board.upper()
 
-		with open(linkReportInsideDhk,'rU') as csvfile:
+		with open(linkReport,'rU') as csvfile:
 			readCSV = csv.reader(csvfile, delimiter=',')
-			header=(csvfile.next()).lower()
 
-			header=header.split(',')
-
-			sourceNeCol=header.index('source ne name')
-			sourceBoardCol=header.index('source board')
-			sinkNeCol=header.index('sink ne name')
-			sinkNeBoardCol=header.index('sink board')
-
-			# print(sourceNeCol,sourceBoardCol,sinkNeCol,sinkNeBoardCol)
 			for row in readCSV:
-				if site in ( row[sourceNeCol].upper() ) and board in ( row[sourceBoardCol].upper() ):
-					return row[sinkNeCol]
 
-				elif site in ( row[sinkNeCol].upper() ) and board in ( row[sinkNeBoardCol].upper() ):
-					return row[sourceNeCol]
-
-		with open(linkReportOutSideDhk,'rU') as csvfile:
-			readCSV = csv.reader(csvfile, delimiter=',')
-			header=(csvfile.next()).lower()
-
-			header=header.split(',')
-
-			sourceNeCol=header.index('source ne name')
-			sourceBoardCol=header.index('source board')
-			sinkNeCol=header.index('sink ne name')
-			sinkNeBoardCol=header.index('sink board')
-
-			# print(sourceNeCol,sourceBoardCol,sinkNeCol,sinkNeBoardCol)
-			for row in readCSV:
-				if site in ( row[sourceNeCol].upper() ) and board in ( row[sourceBoardCol].upper() ):
-					return row[sinkNeCol]
+				if sourceNeCol == None or sourceBoardCol == None or sinkNeCol == None or sinkNeBoardCol == None:
 					
-				elif site in ( row[sinkNeCol].upper() ) and board in ( row[sinkNeBoardCol].upper() ):
-					return row[sourceNeCol]
+					for index, x in enumerate(row):
+
+						x = x.lower()
+						if 'source' in x and 'ne' in x and 'name' in x :
+							sourceNeCol= index # 'source ne name'
+						elif 'source' in x and 'board' in x:
+							sourceBoardCol= index # 'source board'
+						elif 'sink' in x and 'ne' in x and 'name' in x :
+							sinkNeCol= index # 'sink ne name'
+						elif 'sink' in x and 'board' in x:
+							sinkNeBoardCol= index # 'sink board'
+				elif len(row) >= 9 and row[0] != '' and row[0] != ' ':
+
+					if site in ( row[sourceNeCol].upper() ) and board in ( row[sourceBoardCol].upper() ):
+						return row[sinkNeCol]
+
+					elif site in ( row[sinkNeCol].upper() ) and board in ( row[sinkNeBoardCol].upper() ):
+						return row[sourceNeCol]
 
 
 
