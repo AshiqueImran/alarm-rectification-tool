@@ -101,7 +101,12 @@ with open(alarmFile,'rU') as csvfile:
 
 	alarmNameCol=header.index('name')
 	alarmSourceCol=header.index('alarm source')
-	alarmLocation=header.index('location information')
+
+	if 'location information' in header:
+		alarmLocation=header.index('location information')
+	elif 'location info' in header:
+		alarmLocation=header.index('location info')
+
 
 	for row in readCSV:
 

@@ -80,7 +80,7 @@ if __name__ == '__main__':
 	resultLocation["state"] = "disable"
 
 
-	root.title('Alarm Rectification Tool (Beta 2.2.6)')
+	root.title('Alarm Rectification Tool (Beta 3.4.0)')
 	# root.wm_iconbitmap('logo.ico')
 	root.geometry("1100x550") #You want the size of the app to be 500x500
 	root.resizable(0, 0) #Don't allow resizing in the x or y direction
